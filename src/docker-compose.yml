@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  arcus.apis.bacon:
+    container_name: Arcus.API.Bacon
+    image: arcus.apis.bacon
+    build:
+      context: .
+      dockerfile: Arcus.API.Bacon/Dockerfile
+  arcus.ap.gateway:
+    container_name: Arcus.API.Gateway
+    image: mcr.microsoft.com/azure-api-management/gateway:latest
