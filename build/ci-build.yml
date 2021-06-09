@@ -23,7 +23,8 @@ resources:
 
 variables:
   - group: 'Build Configuration'
-    # 'Package.Version.ManualTrigger' is added as queue-time variable on build in Azure DevOps
+  - name: DotNet.Sdk.Version
+    value: '3.1.401'
 
 stages:
   - stage: Build
