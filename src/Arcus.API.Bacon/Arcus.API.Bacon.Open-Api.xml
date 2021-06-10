@@ -9,7 +9,7 @@
             API endpoint to get bacon.
             </summary>
         </member>
-        <member name="M:Arcus.API.Bacon.Controllers.BaconController.#ctor">
+        <member name="M:Arcus.API.Bacon.Controllers.BaconController.#ctor(Arcus.API.Bacon.Repositories.Interfaces.IBaconRepository,Microsoft.Extensions.Logging.ILogger{Arcus.API.Bacon.Controllers.BaconController})">
             <summary>
             Initializes a new instance of the <see cref="T:Arcus.API.Bacon.Controllers.BaconController"/> class.
             </summary>
@@ -41,6 +41,276 @@
             <response code="200">API is healthy</response>
             <response code="503">API is unhealthy or in degraded state</response>
         </member>
+        <member name="T:Arcus.API.Bacon.Correlation.Observability.Sinks.Configuration.ApplicationInsightsSinkExceptionOptions">
+            <summary>
+            User-defined configuration options to influence the behavior of the Azure Application Insights Serilog sink while tracking exceptions.
+            </summary>
+        </member>
+        <member name="P:Arcus.API.Bacon.Correlation.Observability.Sinks.Configuration.ApplicationInsightsSinkExceptionOptions.IncludeProperties">
+            <summary>
+            Gets or sets the flag indicating whether or not the properties of the exception should be included as custom dimensions in the exception tracking.
+            </summary>
+            <remarks>
+                Only the current-level properties are considered during the exception tracking; inherited properties will be excluded.
+            </remarks>
+        </member>
+        <member name="P:Arcus.API.Bacon.Correlation.Observability.Sinks.Configuration.ApplicationInsightsSinkExceptionOptions.PropertyFormat">
+            <summary>
+            <para>Gets or sets the string format to track (public) exception properties.</para>
+            <para>Default: <code>Exception-{0}</code></para>
+            </summary>
+            <remarks>
+                Make sure that you pass along a valid string format where there's room for a single string argument (`{0}` should be included in the format),
+                otherwise an <see cref="T:System.FormatException"/> will be thrown further up the way.
+            </remarks>
+            <exception cref="T:System.ArgumentException">Thrown when the <paramref name="value"/> is blank.</exception>
+            <exception cref="T:System.FormatException">
+                Thrown when the <paramref name="value"/> is not in the correct format to be used as a string format to track (public) exception properties.
+            </exception>
+        </member>
+        <member name="T:Arcus.API.Bacon.Correlation.Observability.Sinks.Configuration.ApplicationInsightsSinkOptions">
+            <summary>
+            User-defined configuration options to influence the behavior of the Azure Application Insights Serilog sink.
+            </summary>
+        </member>
+        <member name="P:Arcus.API.Bacon.Correlation.Observability.Sinks.Configuration.ApplicationInsightsSinkOptions.Exception">
+            <summary>
+            Gets the Application Insights options related to tracking exceptions.
+            </summary>
+        </member>
+        <member name="T:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.CustomApplicationInsightsTelemetryConverter">
+            <summary>
+            Represents a general conversion from Serilog <see cref="T:Serilog.Events.LogEvent"/> instances to Application Insights <see cref="T:Microsoft.ApplicationInsights.Channel.ITelemetry"/> instances.
+            </summary>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.CustomApplicationInsightsTelemetryConverter.Convert(Serilog.Events.LogEvent,System.IFormatProvider)">
+            <summary>
+                Convert the given <paramref name="logEvent"/> to a series of <see cref="T:Microsoft.ApplicationInsights.Channel.ITelemetry"/> instances.
+            </summary>
+            <param name="logEvent">The event containing all relevant information for an <see cref="T:Microsoft.ApplicationInsights.Channel.ITelemetry"/> instance.</param>
+            <param name="formatProvider">The instance to control formatting.</param>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.CustomApplicationInsightsTelemetryConverter.Create">
+            <summary>
+                Creates an instance of the converter
+            </summary>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.CustomApplicationInsightsTelemetryConverter.Create(Arcus.API.Bacon.Correlation.Observability.Sinks.Configuration.ApplicationInsightsSinkOptions)">
+            <summary>
+            Create an instance of the <see cref="T:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.CustomApplicationInsightsTelemetryConverter"/> class.
+            </summary>
+            <param name="options">The optional user-defined configuration options to influence the tracking behavior to Azure Application Insights.</param>
+        </member>
+        <member name="T:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.Dependencies.CustomDependencyTelemetryConverter">
+            <summary>
+            Represents a conversion from a Serilog <see cref="T:Serilog.Events.LogEvent"/> to an Application Insights <see cref="T:Microsoft.ApplicationInsights.DataContracts.DependencyTelemetry"/> instance.
+            </summary>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.Dependencies.CustomDependencyTelemetryConverter.GetDependencyType(Serilog.Events.LogEvent)">
+            <summary>
+                Gets the custom dependency type name from the given <paramref name="logEvent"/> to use in an <see cref="T:Microsoft.ApplicationInsights.DataContracts.DependencyTelemetry"/> instance.
+            </summary>
+            <param name="logEvent">The logged event.</param>
+        </member>
+        <member name="T:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.Dependencies.HttpDependencyTelemetryConverter">
+            <summary>
+            Represents a conversion from a Serilog <see cref="T:Serilog.Events.LogEvent"/> to an Application Insights <see cref="T:Microsoft.ApplicationInsights.DataContracts.DependencyTelemetry"/> instance.
+            </summary>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.Dependencies.HttpDependencyTelemetryConverter.GetDependencyType(Serilog.Events.LogEvent)">
+            <summary>
+                Gets the custom dependency type name from the given <paramref name="logEvent"/> to use in an <see cref="T:Microsoft.ApplicationInsights.DataContracts.DependencyTelemetry"/> instance.
+            </summary>
+            <param name="logEvent">The logged event.</param>
+        </member>
+        <member name="T:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.Dependencies.SqlDependencyTelemetryConverter">
+            <summary>
+            Represents a conversion from a Serilog <see cref="T:Serilog.Events.LogEvent"/> to an Application Insights <see cref="T:Microsoft.ApplicationInsights.DataContracts.DependencyTelemetry"/> instance.
+            </summary>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.Dependencies.SqlDependencyTelemetryConverter.GetDependencyType(Serilog.Events.LogEvent)">
+            <summary>
+                Gets the custom dependency type name from the given <paramref name="logEvent"/> to use in an <see cref="T:Microsoft.ApplicationInsights.DataContracts.DependencyTelemetry"/> instance.
+            </summary>
+            <param name="logEvent">The logged event.</param>
+        </member>
+        <member name="T:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.SuperCustomDependencyTelemetryConverter">
+            <summary>
+            Represents a conversion from a Serilog <see cref="T:Serilog.Events.LogEvent"/> to an <see cref="T:Microsoft.ApplicationInsights.DataContracts.DependencyTelemetry"/> instance.
+            </summary>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.SuperCustomDependencyTelemetryConverter.CreateTelemetryEntry(Serilog.Events.LogEvent,System.IFormatProvider)">
+            <summary>
+                Creates a telemetry entry for a given log event
+            </summary>
+            <param name="logEvent">Event that was logged and written to this sink</param>
+            <param name="formatProvider">Provider to format event</param>
+            <returns>Telemetry entry to emit to Azure Application Insights</returns>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.SuperCustomDependencyTelemetryConverter.GetDependencyType(Serilog.Events.LogEvent)">
+            <summary>
+                Gets the custom dependency type name from the given <paramref name="logEvent"/> to use in an <see cref="T:Microsoft.ApplicationInsights.DataContracts.DependencyTelemetry"/> instance.
+            </summary>
+            <param name="logEvent">The logged event.</param>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.SuperCustomDependencyTelemetryConverter.RemoveIntermediaryProperties(Serilog.Events.LogEvent)">
+            <summary>
+                Provides capability to remove intermediary properties that are logged, but should not be tracked in the sink
+            </summary>
+            <param name="logEvent">Event that was logged and written to this sink</param>
+        </member>
+        <member name="T:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.SuperCustomExceptionTelemetryConverter">
+            <summary>
+            Represents a conversion from a Serilog <see cref="T:Serilog.Events.LogEvent"/> to an Application Insights <see cref="T:Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry"/> instance.
+            </summary>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.SuperCustomExceptionTelemetryConverter.#ctor(Arcus.API.Bacon.Correlation.Observability.Sinks.Configuration.ApplicationInsightsSinkExceptionOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Arcus.Observability.Telemetry.Serilog.Sinks.ApplicationInsights.Converters.ExceptionTelemetryConverter" /> class.
+            </summary>
+            <param name="options">The consumer-configurable options to influence how the exception should be tracked.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when the <paramref name="options"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.SuperCustomExceptionTelemetryConverter.CreateTelemetryEntry(Serilog.Events.LogEvent,System.IFormatProvider)">
+            <summary>
+                Creates a telemetry entry for a given log event
+            </summary>
+            <param name="logEvent">Event that was logged and written to this sink</param>
+            <param name="formatProvider">Provider to format event</param>
+            <returns>Telemetry entry to emit to Azure Application Insights</returns>
+        </member>
+        <member name="T:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.SuperCustomOperationContextConverter">
+            <summary>
+            Represents a conversion from the Operation-related logging information to the Application Insights <see cref="T:Microsoft.ApplicationInsights.Extensibility.Implementation.OperationContext"/> instance.
+            </summary>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.SuperCustomOperationContextConverter.EnrichWithCorrelationInfo``1(``0)">
+            <summary>
+            Enrich the given <paramref name="telemetryEntry"/> with the Operation-related information.
+            </summary>
+            <param name="telemetryEntry">The telemetry instance to enrich.</param>
+        </member>
+        <member name="T:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.SuperCustomRequestTelemetryConverter">
+            <summary>
+            Represents a conversion from a Serilog <see cref="T:Serilog.Events.LogEvent"/> to an Application Insights <see cref="T:Microsoft.ApplicationInsights.DataContracts.RequestTelemetry"/> instance.
+            </summary>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.SuperCustomRequestTelemetryConverter.CreateTelemetryEntry(Serilog.Events.LogEvent,System.IFormatProvider)">
+            <summary>
+                Creates a telemetry entry for a given log event
+            </summary>
+            <param name="logEvent">Event that was logged and written to this sink</param>
+            <param name="formatProvider">Provider to format event</param>
+            <returns>Telemetry entry to emit to Azure Application Insights</returns>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.SuperCustomRequestTelemetryConverter.RemoveIntermediaryProperties(Serilog.Events.LogEvent)">
+            <summary>
+                Provides capability to remove intermediary properties that are logged, but should not be tracked in the sink
+            </summary>
+            <param name="logEvent">Event that was logged and written to this sink</param>
+        </member>
+        <member name="T:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.SuperCustomTelemetryConverter`1">
+            <summary>
+            Represents a custom typed conversion to a series of <see cref="T:Microsoft.ApplicationInsights.Channel.ITelemetry"/> instances.
+            </summary>
+            <typeparam name="TEntry">The concrete <see cref="T:Microsoft.ApplicationInsights.Channel.ITelemetry"/> implementation.</typeparam>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.SuperCustomTelemetryConverter`1.Convert(Serilog.Events.LogEvent,System.IFormatProvider)">
+            <summary>
+                Convert the given <paramref name="logEvent"/> to a series of <see cref="T:Microsoft.ApplicationInsights.Channel.ITelemetry"/> instances.
+            </summary>
+            <param name="logEvent">The event containing all relevant information for an <see cref="T:Microsoft.ApplicationInsights.Channel.ITelemetry"/> instance.</param>
+            <param name="formatProvider">The instance to control formatting.</param>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.SuperCustomTelemetryConverter`1.AssignTelemetryContextProperties(Serilog.Events.LogEvent,Microsoft.ApplicationInsights.DataContracts.ISupportProperties)">
+            <summary>
+            Project the <see cref="P:Serilog.Events.LogEvent.Properties"/> to the properties of the given <paramref name="telemetry"/>.
+            </summary>
+            <param name="logEvent">The log event to extract the properties from.</param>
+            <param name="telemetry">The destination telemetry instance to add the properties to.</param>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.SuperCustomTelemetryConverter`1.CreateTelemetryEntry(Serilog.Events.LogEvent,System.IFormatProvider)">
+            <summary>
+                Creates a telemetry entry for a given log event
+            </summary>
+            <param name="logEvent">Event that was logged and written to this sink</param>
+            <param name="formatProvider">Provider to format event</param>
+            <returns>Telemetry entry to emit to Azure Application Insights</returns>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.Observability.Sinks.Converters.SuperCustomTelemetryConverter`1.RemoveIntermediaryProperties(Serilog.Events.LogEvent)">
+            <summary>
+                Provides capability to remove intermediary properties that are logged, but should not be tracked in the sink
+            </summary>
+            <param name="logEvent">Event that was logged and written to this sink</param>
+        </member>
+        <member name="T:Arcus.API.Bacon.Correlation.WebApi.HttpWithUpstreamApiGatewayCorrelation">
+            <summary>
+            Provides the functionality to correlate HTTP requests and responses according to configured <see cref="T:Arcus.Observability.Correlation.CorrelationInfoOptions"/>,
+            using the <see cref="T:Arcus.Observability.Correlation.ICorrelationInfoAccessor"/> to expose the result.
+            </summary>
+            <seealso cref="T:Arcus.WebApi.Logging.Correlation.HttpCorrelationInfoAccessor"/>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.WebApi.HttpWithUpstreamApiGatewayCorrelation.#ctor(Microsoft.Extensions.Options.IOptions{Arcus.Observability.Correlation.CorrelationInfoOptions},Microsoft.AspNetCore.Http.IHttpContextAccessor,Arcus.Observability.Correlation.ICorrelationInfoAccessor,Microsoft.Extensions.Logging.ILogger{Arcus.WebApi.Logging.Correlation.HttpCorrelation})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Arcus.WebApi.Logging.Correlation.HttpCorrelation"/> class.
+            </summary>
+            <param name="options">The options controlling how the correlation should happen.</param>
+            <param name="correlationInfoAccessor">The instance to set and retrieve the <see cref="T:Arcus.Observability.Correlation.CorrelationInfo"/> instance.</param>
+            <param name="logger">The logger to trace diagnostic messages during the correlation.</param>
+            <param name="httpContextAccessor">The instance to have access to the current HTTP context.</param>
+            <exception cref="T:System.ArgumentNullException">When any of the parameters are <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">When the <paramref name="options"/> doesn't contain a non-<c>null</c> <see cref="P:Microsoft.Extensions.Options.IOptions`1.Value"/></exception>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.WebApi.HttpWithUpstreamApiGatewayCorrelation.GetCorrelationInfo">
+            <summary>
+            Gets the current correlation information initialized in this context.
+            </summary>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.WebApi.HttpWithUpstreamApiGatewayCorrelation.SetCorrelationInfo(Arcus.Observability.Correlation.CorrelationInfo)">
+            <summary>
+            Sets the current correlation information for this context.
+            </summary>
+            <param name="correlationInfo">The correlation model to set.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when the <paramref name="correlationInfo"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.WebApi.HttpWithUpstreamApiGatewayCorrelation.TryHttpCorrelate(System.String@)">
+            <summary>
+            Correlate the current HTTP request according to the previously configured <see cref="T:Arcus.Observability.Correlation.CorrelationInfoOptions"/>;
+            returning an <paramref name="errorMessage"/> when the correlation failed.
+            </summary>
+            <param name="errorMessage">The failure message that describes why the correlation of the HTTP request wasn't successful.</param>
+            <returns>
+                <para>[true] when the HTTP request was successfully correlated and the HTTP response was altered accordingly;</para>
+                <para>[false] there was a problem with the correlation, describing the failure in the <paramref name="errorMessage"/>.</para>
+            </returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when the given <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/> is not available to correlate the request with the response.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when the given <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/> doesn't have any response headers to set the correlation headers.</exception>
+        </member>
+        <member name="T:Arcus.API.Bacon.Correlation.WebApi.Middleware.CorrelationWithUpstreamApiGatewayMiddleware">
+            <summary>
+            Correlate the incoming request with the outgoing response by using previously configured <see cref="T:Arcus.Observability.Correlation.CorrelationInfoOptions"/>.
+            </summary>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.WebApi.Middleware.CorrelationWithUpstreamApiGatewayMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Logging.ILogger{Arcus.API.Bacon.Correlation.WebApi.Middleware.CorrelationWithUpstreamApiGatewayMiddleware})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Arcus.API.Bacon.Correlation.WebApi.Middleware.CorrelationWithUpstreamApiGatewayMiddleware"/> class.
+            </summary>
+            <param name="next">The next functionality in the request pipeline to be executed.</param>
+            <param name="logger">The instance to log diagnostic messages during correlation.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when the <paramref name="next"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:Arcus.API.Bacon.Correlation.WebApi.Middleware.CorrelationWithUpstreamApiGatewayMiddleware.Invoke(Microsoft.AspNetCore.Http.HttpContext,Arcus.API.Bacon.Correlation.WebApi.HttpWithUpstreamApiGatewayCorrelation)">
+            <summary>
+            Request handling method.
+            </summary>
+            <param name="httpContext">The <see cref="T:Microsoft.AspNetCore.Http.HttpContext" /> for the current request.</param>
+            <param name="service">The service to run the correlation functionality.</param>
+            <returns>
+                A <see cref="T:System.Threading.Tasks.Task" /> that represents the execution of this middleware.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when the <paramref name="httpContext"/> or <paramref name="service"/> is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when the <paramref name="httpContext"/> response headers are <c>null</c>.</exception>
+        </member>
         <member name="M:Arcus.API.Bacon.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
             Initializes a new instance of the <see cref="T:Arcus.API.Bacon.Startup"/> class.
@@ -50,6 +320,87 @@
             <summary>
             Gets the configuration of key/value application properties.
             </summary>
+        </member>
+        <member name="T:Serilog.Configuration.LoggerSinkConfigurationExtensions">
+            <summary>
+            Extensions on the <see cref="T:Serilog.Configuration.LoggerSinkConfiguration"/> class to add the Azure Application Insights as a Serilog sink.
+            </summary>
+        </member>
+        <member name="M:Serilog.Configuration.LoggerSinkConfigurationExtensions.AzureApplicationInsightsOnSteroids(Serilog.Configuration.LoggerSinkConfiguration,System.String)">
+            <summary>
+                Adds a Serilog sink that writes <see cref="T:Serilog.Events.LogEvent">log events</see> to Azure Application Insights.
+            </summary>
+            <remarks>
+                Supported telemetry types are Traces, Dependencies, Events, Requests and Metrics for which we provide extensions on <see cref="T:Serilog.ILogger" />.
+            </remarks>
+            <param name="loggerSinkConfiguration">The logger configuration.</param>
+            <param name="instrumentationKey">The required Application Insights key.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when the <paramref name="loggerSinkConfiguration"/> is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when the <paramref name="instrumentationKey"/> is blank.</exception>
+        </member>
+        <member name="M:Serilog.Configuration.LoggerSinkConfigurationExtensions.AzureApplicationInsightsOnSteroids(Serilog.Configuration.LoggerSinkConfiguration,System.String,System.Action{Arcus.API.Bacon.Correlation.Observability.Sinks.Configuration.ApplicationInsightsSinkOptions})">
+            <summary>
+                Adds a Serilog sink that writes <see cref="T:Serilog.Events.LogEvent">log events</see> to Azure Application Insights.
+            </summary>
+            <remarks>
+                Supported telemetry types are Traces, Dependencies, Events, Requests and Metrics for which we provide extensions on <see cref="T:Serilog.ILogger" />.
+            </remarks>
+            <param name="loggerSinkConfiguration">The logger configuration.</param>
+            <param name="instrumentationKey">The required Application Insights key.</param>
+            <param name="configureOptions">The optional function to configure additional options to influence the behavior of how the telemetry is logged to Azure Application Insights.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when the <paramref name="loggerSinkConfiguration"/> is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when the <paramref name="instrumentationKey"/> is blank.</exception>
+        </member>
+        <member name="M:Serilog.Configuration.LoggerSinkConfigurationExtensions.AzureApplicationInsightsOnSteroids(Serilog.Configuration.LoggerSinkConfiguration,System.String,Serilog.Events.LogEventLevel)">
+            <summary>
+                Adds a Serilog sink that writes <see cref="T:Serilog.Events.LogEvent">log events</see> to Azure Application Insights.
+            </summary>
+            <remarks>
+                Supported telemetry types are Traces, Dependencies, Events, Requests and Metrics for which we provide extensions on <see cref="T:Serilog.ILogger" />.
+            </remarks>
+            <param name="loggerSinkConfiguration">The logger configuration.</param>
+            <param name="instrumentationKey">The required Application Insights key.</param>
+            <param name="restrictedToMinimumLevel">The minimum log event level required in order to write an event to the sink.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when the <paramref name="loggerSinkConfiguration"/> is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when the <paramref name="instrumentationKey"/> is blank.</exception>
+        </member>
+        <member name="M:Serilog.Configuration.LoggerSinkConfigurationExtensions.AzureApplicationInsightsOnSteroids(Serilog.Configuration.LoggerSinkConfiguration,System.String,Serilog.Events.LogEventLevel,System.Action{Arcus.API.Bacon.Correlation.Observability.Sinks.Configuration.ApplicationInsightsSinkOptions})">
+            <summary>
+                Adds a Serilog sink that writes <see cref="T:Serilog.Events.LogEvent">log events</see> to Azure Application Insights.
+            </summary>
+            <remarks>
+                Supported telemetry types are Traces, Dependencies, Events, Requests and Metrics for which we provide extensions on <see cref="T:Serilog.ILogger" />.
+            </remarks>
+            <param name="loggerSinkConfiguration">The logger configuration.</param>
+            <param name="instrumentationKey">The required Application Insights key.</param>
+            <param name="restrictedToMinimumLevel">The minimum log event level required in order to write an event to the sink.</param>
+            <param name="configureOptions">The optional function to configure additional options to influence the behavior of how the telemetry is logged to Azure Application Insights.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when the <paramref name="loggerSinkConfiguration"/> is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when the <paramref name="instrumentationKey"/> is blank.</exception>
+        </member>
+        <member name="T:Microsoft.AspNetCore.Builder.IApplicationBuilderExtensions">
+            <summary>
+            Extra extensions on the <see cref="T:Microsoft.AspNetCore.Builder.IApplicationBuilder"/> for logging.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Builder.IApplicationBuilderExtensions.UseHttpCorrelationFromPoc(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            Adds operation and transaction correlation to the application by using the <see cref="T:Arcus.API.Bacon.Correlation.WebApi.Middleware.CorrelationWithUpstreamApiGatewayMiddleware"/> in the request pipeline.
+            </summary>
+            <param name="app">The builder to configure the application's request pipeline.</param>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions">
+            <summary>
+            Adds operation and transaction correlation to the application.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IServiceCollectionExtensions.AddHttpCorrelationFromPoc(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.Action{Arcus.Observability.Correlation.CorrelationInfoOptions})">
+            <summary>
+            Adds operation and transaction correlation to the application.
+            </summary>
+            <param name="services">The services collection containing the dependency injection services.</param>
+            <param name="configureOptions">The function to configure additional options how the correlation works.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when the <paramref name="services"/> is <c>null</c>.</exception>
         </member>
     </members>
 </doc>

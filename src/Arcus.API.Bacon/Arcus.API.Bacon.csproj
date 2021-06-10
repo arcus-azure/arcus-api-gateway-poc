@@ -9,7 +9,6 @@
     <UserSecretsId>10d92192-1ca4-4709-8205-ed3f2fd28032</UserSecretsId>
   </PropertyGroup>
 
-
   <ItemGroup>
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -24,6 +23,7 @@
     <PackageReference Include="Arcus.Security.Core" Version="1.4.1" />
     <PackageReference Include="Arcus.Security.Providers.AzureKeyVault" Version="1.4.1" />
     <PackageReference Include="Arcus.WebApi.Logging" Version="1.1.0" />
+    <PackageReference Include="Bogus" Version="33.0.2" />
     <PackageReference Include="Guard.NET" Version="1.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.14" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
