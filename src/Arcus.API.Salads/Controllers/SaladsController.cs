@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Arcus.API.Bacon.Repositories.Interfaces;
+using Arcus.API.Salads.Repositories.Interfaces;
 using GuardNet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,49 +7,49 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Filters;
 
-namespace Arcus.API.Bacon.Controllers
+namespace Arcus.API.Salads.Controllers
 {
     /// <summary>
-    /// API endpoint to get bacon.
+    /// API endpoint to get salads.
     /// </summary>
     [ApiController]
-    [Route("api/v1/bacon")]
-    public class BaconController : ControllerBase
+    [Route("api/v1/salads")]
+    public class SaladsController : ControllerBase
     {
-        private readonly IBaconRepository _baconRepository;
-        private readonly ILogger<BaconController> _logger;
+        private readonly ISaladRepository _saladRepository;
+        private readonly ILogger<SaladsController> _logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BaconController"/> class.
+        /// Initializes a new instance of the <see cref="SaladsController"/> class.
         /// </summary>
-        public BaconController(IBaconRepository baconRepository, ILogger<BaconController> logger)
+        public SaladsController(ISaladRepository saladRepository, ILogger<SaladsController> logger)
         {
-            Guard.NotNull(baconRepository, nameof(baconRepository));
+            Guard.NotNull(saladRepository, nameof(saladRepository));
             Guard.NotNull(logger, nameof(logger));
 
-            _baconRepository = baconRepository;
+            _saladRepository = saladRepository;
             _logger = logger;
         }
 
         /// <summary>
-        ///     Get Bacon
+        ///     Get Salad
         /// </summary>
-        /// <remarks>Provides an overview of various bacon flavors.</remarks>
-        /// <response code="200">Bacon is served!</response>
+        /// <remarks>Provides an overview of salad dishes.</remarks>
+        /// <response code="200">Salad is served!</response>
         /// <response code="503">Uh-oh! Things went wrong</response>
-        [HttpGet(Name = "Bacon_Get")]
+        [HttpGet(Name = "Salad_Get")]
         [ProducesResponseType(typeof(HealthReport), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(HealthReport), StatusCodes.Status503ServiceUnavailable)]
         [SwaggerResponseHeader(200, "RequestId", "string", "The header that has a request ID that uniquely identifies this operation call")]
         [SwaggerResponseHeader(200, "X-Transaction-Id", "string", "The header that has the transaction ID is used to correlate multiple operation calls.")]
         public async Task<IActionResult> Get()
         {
-            var baconFlavors = await _baconRepository.GetFlavorsAsync();
+            var saladFlavors = await _saladRepository.GetDishRecommendationsAsync();
 
-            _logger.LogEvent("Bacon Served");
-            _logger.LogMetric("Bacon Served", 1);
+            _logger.LogEvent("Salad Served");
+            _logger.LogMetric("Salad Served", 1);
             
-            return Ok(baconFlavors);
+            return Ok(saladFlavors);
         }
     }
 }
