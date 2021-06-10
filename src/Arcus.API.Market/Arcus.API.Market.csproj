@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <DocumentationFile>Arcus.API.Bacon.Open-Api.xml</DocumentationFile>
+    <DocumentationFile>Arcus.API.Market.Open-Api.xml</DocumentationFile>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
     <UserSecretsId>10d92192-1ca4-4709-8205-ed3f2fd28032</UserSecretsId>

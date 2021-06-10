@@ -1,5 +1,5 @@
-using Arcus.API.Bacon.Repositories;
-using Arcus.API.Bacon.Repositories.Interfaces;
+using Arcus.API.Salads.Repositories;
+using Arcus.API.Salads.Repositories.Interfaces;
 using Arcus.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,13 +7,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
-namespace Arcus.API.Bacon
+namespace Arcus.API.Salads
 {
     public class Startup : ApiStartup
     {
-        private const string ComponentName = "Bacon API";
+        private const string ComponentName = "Salad API";
         private string ApiName => $"Arcus - {ComponentName}";
-
+        
         public Startup(IConfiguration configuration)
             : base(configuration)
         {
@@ -41,9 +41,9 @@ namespace Arcus.API.Bacon
             services.AddHealthChecks();
             services.AddHttpCorrelationFromPoc();
             
-            services.AddScoped<IBaconRepository, BaconRepository>();
+            services.AddScoped<ISaladRepository, SaladRepository>();
 
-            ConfigureOpenApiGeneration(ApiName, "Arcus.API.Bacon.Open-Api.xml", services);
+            ConfigureOpenApiGeneration(ApiName, "Arcus.API.Salads.Open-Api.xml", services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
