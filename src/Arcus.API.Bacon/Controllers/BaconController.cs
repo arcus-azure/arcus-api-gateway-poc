@@ -1,7 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Arcus.API.Bacon.Repositories.Interfaces;
+using GuardNet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace Arcus.API.Bacon.Controllers
@@ -13,11 +17,19 @@ namespace Arcus.API.Bacon.Controllers
     [Route("api/v1/bacon")]
     public class BaconController : ControllerBase
     {
+        private readonly IBaconRepository _baconRepository;
+        private readonly ILogger<BaconController> _logger;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="BaconController"/> class.
         /// </summary>
-        public BaconController()
+        public BaconController(IBaconRepository baconRepository, ILogger<BaconController> logger)
         {
+            Guard.NotNull(baconRepository, nameof(baconRepository));
+            Guard.NotNull(logger, nameof(logger));
+
+            _baconRepository = baconRepository;
+            _logger = logger;
         }
 
         /// <summary>
@@ -31,19 +43,13 @@ namespace Arcus.API.Bacon.Controllers
         [ProducesResponseType(typeof(HealthReport), StatusCodes.Status503ServiceUnavailable)]
         [SwaggerResponseHeader(200, "RequestId", "string", "The header that has a request ID that uniquely identifies this operation call")]
         [SwaggerResponseHeader(200, "X-Transaction-Id", "string", "The header that has the transaction ID is used to correlate multiple operation calls.")]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            var baconFlavors = new List<string>
-            {
-                "Infamous Black Pepper Bacon",
-                "Italian Bacon",
-                "Raspberry Chipotle",
-                "Pumpkin Pie Spiced",
-                "Apple Cinnamon",
-                "Jalapeño Bacon",
-                "Cajun Style"
-            };
+            var baconFlavors = await _baconRepository.GetFlavorsAsync();
 
+            _logger.LogEvent("Bacon Served");
+            _logger.LogMetric("Bacon Served", 1);
+            
             return Ok(baconFlavors);
         }
     }

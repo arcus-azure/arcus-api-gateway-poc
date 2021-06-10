@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text.Json.Serialization;
+using Arcus.API.Bacon.Repositories;
+using Arcus.API.Bacon.Repositories.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -53,8 +55,43 @@ namespace Arcus.API.Bacon
             });
 
             services.AddHealthChecks();
-            services.AddHttpCorrelation();
+            services.AddHttpCorrelationFromPoc();
             
+            services.AddScoped<IBaconRepository, BaconRepository>();
+
+            ConfigureOpenApiGeneration(services);
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            app.UseExceptionHandling();
+            app.UseHttpCorrelationFromPoc();
+            app.UseRouting();
+            app.UseRequestTracking();
+            
+            ExposeOpenApiDocs(app);
+
+            Log.Logger = CreateLoggerConfiguration(app.ApplicationServices).CreateLogger();
+        }
+
+        private LoggerConfiguration CreateLoggerConfiguration(IServiceProvider serviceProvider)
+        {
+            var instrumentationKey = Configuration.GetValue<string>(ApplicationInsightsInstrumentationKeyName);
+            
+            return new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .Enrich.FromLogContext()
+                .Enrich.WithVersion()
+                .Enrich.WithComponentName("Bacon API")
+                .Enrich.WithHttpCorrelationInfo(serviceProvider)
+                .WriteTo.Console()
+                .WriteTo.AzureApplicationInsightsOnSteroids(instrumentationKey);
+        }
+
+        private static void ConfigureOpenApiGeneration(IServiceCollection services)
+        {
             var openApiInformation = new OpenApiInfo
             {
                 Title = "Arcus - Bacon API",
@@ -64,9 +101,12 @@ namespace Arcus.API.Bacon
             services.AddSwaggerGen(swaggerGenerationOptions =>
             {
                 swaggerGenerationOptions.SwaggerDoc("v1", openApiInformation);
-                swaggerGenerationOptions.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Arcus.API.Bacon.Open-Api.xml"));
+                swaggerGenerationOptions.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,
+                    "Arcus.API.Bacon.Open-Api.xml"));
 
-                swaggerGenerationOptions.OperationFilter<AddHeaderOperationFilter>("X-Transaction-Id", "Transaction ID is used to correlate multiple operation calls. A new transaction ID will be generated if not specified.", false);
+                swaggerGenerationOptions.OperationFilter<AddHeaderOperationFilter>("X-Transaction-Id",
+                    "Transaction ID is used to correlate multiple operation calls. A new transaction ID will be generated if not specified.",
+                    false);
                 swaggerGenerationOptions.OperationFilter<AddResponseHeadersFilter>();
             });
         }
@@ -91,7 +131,7 @@ namespace Arcus.API.Bacon
                 inputFormatter.SerializerOptions.IgnoreNullValues = true;
                 inputFormatter.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
             }
-            
+
             var onlyJsonOutputFormatters = options.OutputFormatters.OfType<SystemTextJsonOutputFormatter>();
             foreach (SystemTextJsonOutputFormatter outputFormatter in onlyJsonOutputFormatters)
             {
@@ -100,18 +140,9 @@ namespace Arcus.API.Bacon
             }
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        private static void ExposeOpenApiDocs(IApplicationBuilder app)
         {
-            app.UseExceptionHandling();
-            app.UseHttpCorrelation();
-            app.UseRouting();
-            app.UseRequestTracking();
-            
-            app.UseSwagger(swaggerOptions =>
-            {
-                swaggerOptions.RouteTemplate = "api/{documentName}/docs.json";
-            });
+            app.UseSwagger(swaggerOptions => { swaggerOptions.RouteTemplate = "api/{documentName}/docs.json"; });
             app.UseSwaggerUI(swaggerUiOptions =>
             {
                 swaggerUiOptions.SwaggerEndpoint("/api/v1/docs.json", "Arcus - Bacon API");
@@ -119,23 +150,6 @@ namespace Arcus.API.Bacon
                 swaggerUiOptions.DocumentTitle = "Arcus.API.Bacon";
             });
             app.UseEndpoints(endpoints => endpoints.MapControllers());
-
-            Log.Logger = CreateLoggerConfiguration(app.ApplicationServices).CreateLogger();
-        }
-
-        private LoggerConfiguration CreateLoggerConfiguration(IServiceProvider serviceProvider)
-        {
-            var instrumentationKey = Configuration.GetValue<string>(ApplicationInsightsInstrumentationKeyName);
-            
-            return new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                .Enrich.FromLogContext()
-                .Enrich.WithVersion()
-                .Enrich.WithComponentName("Bacon API")
-                .Enrich.WithHttpCorrelationInfo(serviceProvider)
-                .WriteTo.Console()
-                .WriteTo.AzureApplicationInsights(instrumentationKey);
         }
     }
 }
