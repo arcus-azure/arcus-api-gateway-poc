@@ -41,10 +41,5 @@
             <response code="200">API is healthy</response>
             <response code="503">API is unhealthy or in degraded state</response>
         </member>
-        <member name="P:Arcus.API.Bacon.Startup.Configuration">
-            <summary>
-            Gets the configuration of key/value application properties.
-            </summary>
-        </member>
     </members>
 </doc>

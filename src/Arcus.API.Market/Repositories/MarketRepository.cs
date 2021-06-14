@@ -25,21 +25,9 @@ namespace Arcus.API.Market.Repositories
 
         public async Task<List<string>> OrderBaconAsync(int amount)
         {
-            using (var dependencyMeasurement = DependencyMeasurement.Start("Create Order"))
-            {
-                try
-                {
-                    // Get Bacon
-                    var bacon = await _baconService.GetBaconAsync();
-                    
-                    return bacon.Take(amount).ToList();
-                }
-                finally
-                {
-                    // Normally you would do it in the repo but ok
-                    _logger.LogTableStorageDependency("market", "salads", isSuccessful:true, dependencyMeasurement);
-                }
-            }
+            var bacon = await _baconService.GetBaconAsync();
+            
+            return bacon.Take(amount).ToList();
         }
     }
 }
