@@ -30,6 +30,17 @@ End-to-end correlation from Azure API Management is provided until the database:
 
 _Some of the action items can be easily found by searching for `TODO: Contribute Upstream` or using the Task List._
 
+## Clarification Required
+
+- [ ] Should we generate ID's according to W3C (`System.Diagnostics.Activity`)?
+- [ ] Why are the correlation options part of Arcus Observability if they are scoped to Web APIs?
+
+## Out-of-scope
+
+Doing end-to-end correlation across multiple components and back is not in scope.
+
+This needs to be improved in Arcus and probably should extend this POC or start a new one.
+
 ### Telemetry Correlation
 
 As per [the guidance](https://docs.microsoft.com/en-us/azure/azure-monitor/app/correlation#data-model-for-telemetry-correlation):
@@ -49,8 +60,3 @@ This means that we are handling the operation ID (aka `operation_Id`) correctly 
 - Keep track of the unique IDs for dependency telemetry items, to use as parent ID for other telemetry
 
 Learn more in [this example](https://docs.microsoft.com/en-us/azure/azure-monitor/app/correlation#example).
-
-## Clarification Required
-
-- [ ] Should we generate ID's according to W3C (`System.Diagnostics.Activity`)?
-- [ ] Why are the correlation options part of Arcus Observability if they are scoped to Web APIs?
