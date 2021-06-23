@@ -13,7 +13,8 @@ Before you can run this, you need to:
 3. Create a Bacon API based on the OpenAPI spec of our local API ([url](http://localhost:789/api/docs/index.html))
 4. Make Bacon API available locally
 5. Run solution with Docker Compose
-6. Get bacon by calling the self-hosted gateway - GET http://localhost:700/api/v1/bacon
+6. Get bacon by calling the self-hosted gateway - GET http://localhost:700/market/bacon/api/v1/bacon
+  - Ensure to add the `X-API-Key` header with your subscription key
 
 ## Observability
 
@@ -33,7 +34,8 @@ _Some of the action items can be easily found by searching for `TODO: Contribute
 ## Clarification Required
 
 - [ ] Should we generate ID's according to W3C (`System.Diagnostics.Activity`)?
-- [ ] Why are the correlation options part of Arcus Observability if they are scoped to Web APIs?
+- [x] Why are the correlation options part of Arcus Observability if they are scoped to Web APIs?
+  - This is required for our Serilog stack
 
 ## Out-of-scope
 
