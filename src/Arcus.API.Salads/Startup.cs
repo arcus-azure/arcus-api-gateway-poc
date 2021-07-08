@@ -39,7 +39,7 @@ namespace Arcus.API.Salads
             });
 
             services.AddHealthChecks();
-            services.AddHttpCorrelationFromPoc();
+            services.AddHttpCorrelation(options => options.UpstreamService.ExtractFromRequest = true);
             
             services.AddScoped<ISaladRepository, SaladRepository>();
 
@@ -50,7 +50,7 @@ namespace Arcus.API.Salads
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseExceptionHandling();
-            app.UseHttpCorrelationFromPoc();
+            app.UseHttpCorrelation();
             app.UseRouting();
             app.UseRequestTracking();
             

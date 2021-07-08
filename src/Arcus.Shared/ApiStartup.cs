@@ -104,7 +104,7 @@ namespace Arcus.Shared
                 .Enrich.WithComponentName(componentName)
                 .Enrich.WithHttpCorrelationInfo(serviceProvider)
                 .WriteTo.Console()
-                .WriteTo.AzureApplicationInsightsOnSteroids(instrumentationKey);
+                .WriteTo.AzureApplicationInsights(instrumentationKey);
         }
     }
 }
