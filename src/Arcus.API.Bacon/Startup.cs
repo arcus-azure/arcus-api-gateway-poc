@@ -1,6 +1,7 @@
 using Arcus.API.Bacon.Repositories;
 using Arcus.API.Bacon.Repositories.Interfaces;
 using Arcus.Shared;
+using Arcus.WebApi.Logging.Core.Correlation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -39,7 +40,7 @@ namespace Arcus.API.Bacon
             });
 
             services.AddHealthChecks();
-            services.AddHttpCorrelationFromPoc();
+            services.AddHttpCorrelation(options => options.UpstreamService.ExtractFromRequest = true);
             
             services.AddScoped<IBaconRepository, BaconRepository>();
 
@@ -50,7 +51,7 @@ namespace Arcus.API.Bacon
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseExceptionHandling();
-            app.UseHttpCorrelationFromPoc();
+            app.UseHttpCorrelation();
             app.UseRouting();
             app.UseRequestTracking();
             

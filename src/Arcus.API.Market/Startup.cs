@@ -41,7 +41,7 @@ namespace Arcus.API.Market
             });
 
             services.AddHealthChecks();
-            services.AddHttpCorrelationFromPoc();
+            services.AddHttpCorrelation(options => options.UpstreamService.ExtractFromRequest = true);
 
             services.AddHttpClient();
             services.AddScoped<IBaconService, BaconService>();
@@ -54,7 +54,7 @@ namespace Arcus.API.Market
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseExceptionHandling();
-            app.UseHttpCorrelationFromPoc();
+            app.UseHttpCorrelation();
             app.UseRouting();
             app.UseRequestTracking();
             
