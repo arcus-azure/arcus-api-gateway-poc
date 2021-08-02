@@ -1,5 +1,7 @@
 # Arcus - API Gateway POC
 
+> 💡 **This POC is closed and learnings are available as of [Arcus Web API v1.4.0](https://github.com/arcus-azure/arcus.webapi/releases/tag/v1.4.0)**.
+
 POC to integrate Azure API Management with our observability based on `Request-Id` according [W3C Trace-Context](https://www.w3.org/TR/trace-context/).
 
 ![Arcus](https://raw.githubusercontent.com/arcus-azure/arcus/master/media/arcus.png)
@@ -24,16 +26,17 @@ End-to-end correlation from Azure API Management is provided until the database:
 
 ## Action items
 
-- [ ] Be more open and extensible in Arcus ([Arcus #143](https://github.com/arcus-azure/arcus/issues/143))
-- [ ] Incorporate hacks upstream to be able to interpret, track and use parent id
-- [ ] Incorporate hacks upstream allowing users to re-use upstream service operation id and tracking them correspondingly
-- [ ] Provide support for tracking parent operation IDs, based on the guidance ([docs](https://docs.microsoft.com/en-us/azure/azure-monitor/app/correlation#data-model-for-telemetry-correlation), *see below*)
+- [x] Be more open and extensible in Arcus ([Arcus #143](https://github.com/arcus-azure/arcus/issues/143))
+- [x] Incorporate hacks upstream to be able to interpret, track and use parent id
+- [x] Incorporate hacks upstream allowing users to re-use upstream service operation id and tracking them correspondingly
+- [x] Provide support for tracking parent operation IDs, based on the guidance ([docs](https://docs.microsoft.com/en-us/azure/azure-monitor/app/correlation#data-model-for-telemetry-correlation), *see below*)
 
 _Some of the action items can be easily found by searching for `TODO: Contribute Upstream` or using the Task List._
 
 ## Clarification Required
 
-- [ ] Should we generate ID's according to W3C (`System.Diagnostics.Activity`)?
+- [x] Should we generate ID's according to W3C (`System.Diagnostics.Activity`)?
+  - Tracked in https://github.com/arcus-azure/arcus.webapi/issues/248
 - [x] Why are the correlation options part of Arcus Observability if they are scoped to Web APIs?
   - This is required for our Serilog stack
 
